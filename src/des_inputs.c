@@ -50,7 +50,8 @@ int main(void) {
 			printf("Enter the person's ID: \n");
 			//Get person ID from User
 			scanf("%d", &person.id);
-
+			person.direction = 1; // IN
+			person.state = IDLE;
 		}
 		//apply what you know and repeat for "rs"
 		if (strcmp(&input, inMessage[1]))
@@ -59,7 +60,8 @@ int main(void) {
 			printf("Enter the person's ID: \n");
 			//Get person ID from User
 			scanf("%d", &person.id);
-
+			person.direction = 2; // OUT
+			person.state = IDLE;
 		}
 		//apply what you know and repeat for "ws", with the notable exception: prompt User for person's weight
 		if (strcmp(&input, inMessage[6]))
@@ -68,16 +70,21 @@ int main(void) {
 			printf("Enter the person's weight: \n");
 			//Get person ID from User
 			scanf("%d", &person.weight);
-
+			person.state = WEIGHT_SCALE;
 		}
 		//Send Person object to controller (server); no message from controller is returned to client.
+		strcpy(&person.input, input);
+
+		if(MsgSend(coid, &person, sizeof(Person),NULL,0) == -1){
+			fprintf(stderr, "MsgSend had an error\n");
+			exit(EXIT_FAILURE);
+		}
 
 		//IF input-event == "exit" THEN
 		if (strcmp(&input, inMessage[11]))
 		{
 			//Prompt User for person ID
 			printf("Exiting \n");
-			//TODO send message to controller without person?
 			//break out of while loop
 			break;
 		}
