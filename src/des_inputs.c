@@ -6,12 +6,9 @@
 
 #include "../../des_controller/src/des.h"
 
-int main(void) {
+int main(int argc, char* argv[]) {
 
 	Person person;
-
-	client_send_t msg_send;
-	server_response_t msg_receive;
 	pid_t serverpid;
 	int coid;
 
@@ -37,51 +34,51 @@ int main(void) {
 	}
 
 	//Phase II
-	while( TRUE ){
+	while( 1 ){
 		char input[64];
 		//Prompt User for DES input-event (printf())
 		puts("Enter the event type (ls = left scan, rs = right scan, ws = weight scale, lo = left open, ro = right open, lc = left closed, rs = right closed, gru = guard right unlock, grl = guard right lock, gll = guard left lock, glu = guard left unlock, exit = exit programs)\n");
 		//Get input-event from User (scanf())
 		scanf("%s", input);
 		//IF input-event == "ls" THEN
-		if (strcmp(&input, inMessage[0]))
+		if (strcmp(input, inMessage[0]) == 0)
 		{
 			//Prompt User for person ID
 			printf("Enter the person's ID: \n");
 			//Get person ID from User
 			scanf("%d", &person.id);
 			person.direction = 1; // IN
-			person.state = IDLE;
+			person.state = IDLE_STATE;
 		}
 		//apply what you know and repeat for "rs"
-		if (strcmp(&input, inMessage[1]))
+		if (strcmp(input, inMessage[1]) == 0)
 		{
 			//Prompt User for person ID
 			printf("Enter the person's ID: \n");
 			//Get person ID from User
 			scanf("%d", &person.id);
 			person.direction = 2; // OUT
-			person.state = IDLE;
+			person.state = IDLE_STATE;
 		}
 		//apply what you know and repeat for "ws", with the notable exception: prompt User for person's weight
-		if (strcmp(&input, inMessage[6]))
+		if (strcmp(input, inMessage[6]) == 0)
 		{
 			//Prompt User for person ID
 			printf("Enter the person's weight: \n");
 			//Get person ID from User
 			scanf("%d", &person.weight);
-			person.state = WEIGHT_SCALE;
+			person.state = WEIGHT_SCALE_STATE;
 		}
 		//Send Person object to controller (server); no message from controller is returned to client.
 		strcpy(&person.input, input);
 
-		if(MsgSend(coid, &person, sizeof(Person),NULL,0) == -1){
+		if(MsgSend(coid, &person, sizeof(Person),NULL, 0) == -1){
 			fprintf(stderr, "MsgSend had an error\n");
 			exit(EXIT_FAILURE);
 		}
 
 		//IF input-event == "exit" THEN
-		if (strcmp(&input, inMessage[11]))
+		if (strcmp(&input, inMessage[11]) == 0)
 		{
 			//Prompt User for person ID
 			printf("Exiting \n");
