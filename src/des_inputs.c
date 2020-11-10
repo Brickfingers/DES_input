@@ -72,7 +72,8 @@ int main(int argc, char* argv[]) {
 		//Send Person object to controller (server); no message from controller is returned to client.
 		strcpy(&person.input, input);
 
-		if(MsgSend(coid, &person, sizeof(Person),NULL, 0) == -1){
+		if(MsgSend(coid, &person, sizeof(Person),NULL, 0) == -1L){
+			printf("Error here");
 			fprintf(stderr, "MsgSend had an error\n");
 			exit(EXIT_FAILURE);
 		}
